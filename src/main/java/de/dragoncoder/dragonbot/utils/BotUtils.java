@@ -1,6 +1,7 @@
 package de.dragoncoder.dragonbot.utils;
 
 import de.dragoncoder.dragonbot.Main;
+import de.dragoncoder.dragonbot.hibernate.HibernateUtils;
 import de.dragoncoder.dragonbot.structures.BotValues;
 import net.dv8tion.jda.api.OnlineStatus;
 import org.slf4j.Logger;
@@ -19,23 +20,15 @@ public class BotUtils {
 
     public void callAction(String line) {
 
+        //noinspection SwitchStatementWithTooFewBranches
         switch (line.toLowerCase().split(" ")[0]) {
             case "exit":
                 onShutdown();
                 botValues.setShutdown(true);
                 botValues.setTotalShutdown(true);
                 break;
-//            case "active":
-//                active();
-//                break;
 //            case "stats":
 //                stats();
-//                break;
-//            case "guilds":
-//                DragonBot_Utils.guilds();
-//                break;
-//            case "members":
-//                members(Integer.parseInt(line.substring((line.indexOf(" ") + 1)).split(" ")[0]));
 //                break;
 //            case "notify":
 //                notify(line.substring((line.indexOf(" ") + 1)));
@@ -47,6 +40,8 @@ public class BotUtils {
     }
 
     private void onShutdown() {
+        HibernateUtils.shutdown();
+
         Main.getDragonBot().getShardMan().setStatus(OnlineStatus.OFFLINE);
         Main.getDragonBot().getShardMan().shutdown();
 

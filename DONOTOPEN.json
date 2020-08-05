@@ -1,0 +1,9 @@
+[
+	{
+		"token": "YOUR TOKEN HERE",
+		"link": "BOT_INVITE_LINK",
+		"mysqlLink": "LINK TO YOUR DATABASE",
+		"mysqlUser": "DATABASE USERNAME",
+		"mysqlPswd": "DATABASE PASSWORD"
+	}
+]

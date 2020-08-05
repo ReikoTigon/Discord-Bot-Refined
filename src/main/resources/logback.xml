@@ -38,7 +38,7 @@
 
     <!-- put all packages of non interesting output here -->
     <logger name="net.dv8tion.jda" level="warn" />
-    <logger name="org.hibernate" level="info"/>
+    <logger name="org.hibernate" level="warn"/>
 
     <root level="DEBUG">
         <appender-ref ref="SYS.OUT" />

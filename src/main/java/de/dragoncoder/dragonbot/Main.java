@@ -1,5 +1,6 @@
 package de.dragoncoder.dragonbot;
 
+import de.dragoncoder.dragonbot.hibernate.HibernateUtils;
 import de.dragoncoder.dragonbot.structures.SecuredData;
 import lombok.Getter;
 import org.json.simple.JSONArray;
@@ -15,22 +16,9 @@ import java.io.IOException;
 
 public class Main {
 
-    @Getter
-    private static SecuredData securedData;
-    private static Logger logger;
-    @Getter
-    private static Bot dragonBot;
-
-    public static void main(String[] args) {
-        setLoggingPath();
-        logger = LoggerFactory.getLogger(Main.class);
-
-        securedData = importSecuredData();
-
-        dragonBot = new Bot();
-    }
-
-    private static void setLoggingPath () {
+    //Static Initializer
+    static {
+        //Set path for LogBack HTML-File output before anything other happens
         String os = System.getProperty("os.name");
 
         if (os.equals("Windows 10")) {
@@ -41,9 +29,25 @@ public class Main {
         }
     }
 
+    @Getter
+    private static SecuredData securedData;
+    @Getter
+    private static Bot dragonBot;
+
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
+
+    public static void main(String[] args) {
+        securedData = importSecuredData();
+
+        HibernateUtils.getBotSessionFactory();
+
+        dragonBot = new Bot();
+    }
+
     private static SecuredData importSecuredData() {
         JSONParser jsonParser = new JSONParser();
-        File json = new File("DragonBot(Git) - New\\DONOTOPEN.json");
+        File json = new File("DONOTOPEN.json");
 
         if(json.exists()) {
             try (FileReader reader = new FileReader(json)) {
@@ -53,10 +57,10 @@ public class Main {
 
                 return SecuredData.builder()
                         .token(jsonObject.get("token").toString())
-                        .link(jsonObject.get("link").toString())
+                        .inviteLink(jsonObject.get("link").toString())
                         .mysqlLink(jsonObject.get("mysqlLink").toString())
                         .mysqlUser(jsonObject.get("mysqlUser").toString())
-                        .mysqlPswd(jsonObject.get("mysqlPswd").toString())
+                        .mysqlPassword(jsonObject.get("mysqlPswd").toString())
                     .build();
             } catch (ParseException | IOException e) {
                 logger.error("Error whilst parsing SecuredData", e);

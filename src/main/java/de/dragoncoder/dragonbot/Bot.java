@@ -1,5 +1,8 @@
 package de.dragoncoder.dragonbot;
 
+import de.dragoncoder.dragonbot.listeners.TextListener;
+import de.dragoncoder.dragonbot.managers.CommandManager;
+import de.dragoncoder.dragonbot.managers.GuildManager;
 import de.dragoncoder.dragonbot.structures.BotValues;
 import de.dragoncoder.dragonbot.utils.BotUtils;
 import lombok.Getter;
@@ -24,6 +27,11 @@ public class Bot {
     @Getter
     private final ShardManager shardMan;
     @Getter
+    private final GuildManager guildManager;
+    @Getter
+    private final CommandManager commandManager;
+
+    @Getter
     private final BotValues botValues;
 
     private final BotUtils botUtils;
@@ -33,7 +41,10 @@ public class Bot {
 
         botValues = new BotValues();
         botUtils = new BotUtils(botValues);
+
         shardMan = createShardManager();
+        guildManager = new GuildManager();
+        commandManager = new CommandManager();
 
         awaitJdaReady();
 
@@ -58,6 +69,7 @@ public class Bot {
             builder.setStatus(OnlineStatus.ONLINE);
 
             //EventListeners
+            builder.addEventListeners(new TextListener());
 
             shardMan = builder.build();
         }
