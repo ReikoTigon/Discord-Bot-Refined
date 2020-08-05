@@ -53,10 +53,6 @@ public class Main {
 
                 return SecuredData.builder()
                         .token(jsonObject.get("token").toString())
-                        .link(jsonObject.get("link").toString())
-                        .mysqlLink(jsonObject.get("mysqlLink").toString())
-                        .mysqlUser(jsonObject.get("mysqlUser").toString())
-                        .mysqlPswd(jsonObject.get("mysqlPswd").toString())
                     .build();
             } catch (ParseException | IOException e) {
                 logger.error("Error whilst parsing SecuredData", e);
