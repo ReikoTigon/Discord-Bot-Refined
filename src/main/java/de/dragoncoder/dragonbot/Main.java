@@ -43,7 +43,7 @@ public class Main {
 
     private static SecuredData importSecuredData() {
         JSONParser jsonParser = new JSONParser();
-        File json = new File("DragonBot(Git) - New\\DONOTOPEN.json");
+        File json = new File("DONOTOPEN.json");
 
         if(json.exists()) {
             try (FileReader reader = new FileReader(json)) {
