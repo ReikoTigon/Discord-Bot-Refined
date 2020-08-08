@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public interface DAO<T> {
 
     Logger logger = LoggerFactory.getLogger(DAO.class);

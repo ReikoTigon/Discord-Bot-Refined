@@ -24,3 +24,11 @@ hs_err_pid*
 
 #SecretFiles
 #DONOTOPEN.json
+README.md
+
+/target/
+
+DragonBotNew.iml
+/src/main/java/META-INF/
+/Logs/
+/.idea/

@@ -6,11 +6,9 @@ import lombok.Data;
 public class BotValues {
 	private boolean init;
 	private boolean shutdown;
-	private boolean totalShutdown;
 	
 	public BotValues() {
 		setInit(true);			    	//hasStarted
 		setShutdown(false);				//shutdown
-		setTotalShutdown(false);	    //totalShutdown
 	}
 }

@@ -34,4 +34,8 @@ public class GuildManager {
 
         return guild;
     }
+
+    public void removeGuild(long guildID) {
+        guildManager.remove(guildID);
+    }
 }

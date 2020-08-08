@@ -2,6 +2,7 @@ package de.dragoncoder.dragonbot.utils;
 
 import de.dragoncoder.dragonbot.Main;
 import de.dragoncoder.dragonbot.hibernate.HibernateUtils;
+import de.dragoncoder.dragonbot.hibernate.entity.BotGuild;
 import de.dragoncoder.dragonbot.structures.BotValues;
 import net.dv8tion.jda.api.OnlineStatus;
 import org.slf4j.Logger;
@@ -20,31 +21,40 @@ public class BotUtils {
 
     public void callAction(String line) {
 
-        //noinspection SwitchStatementWithTooFewBranches
         switch (line.toLowerCase().split(" ")[0]) {
             case "exit":
                 onShutdown();
                 botValues.setShutdown(true);
-                botValues.setTotalShutdown(true);
                 break;
 //            case "stats":
 //                stats();
 //                break;
-//            case "notify":
-//                notify(line.substring((line.indexOf(" ") + 1)));
-//                break;
+            case "notify":
+                notify(line.substring(7));
+                break;
             default:
                 logger.info("Unknown Command");
                 break;
         }
     }
 
+    private void notify(String message) {
+        Main.getDragonBot().getShardManager().getGuilds().forEach(guild -> {
+            BotGuild botGuild = Main.getDragonBot().getGuildManager().getGuild(guild.getIdLong());
+            botGuild.loadBotChannel();
+
+            if (botGuild.getBotChannel() != null) {
+                SendingUtils.sendNotification(botGuild.getBotChannel(), message);
+            }
+        });
+    }
+
     private void onShutdown() {
         HibernateUtils.shutdown();
 
-        Main.getDragonBot().getShardMan().setStatus(OnlineStatus.OFFLINE);
-        Main.getDragonBot().getShardMan().shutdown();
+        Main.getDragonBot().getShardManager().setStatus(OnlineStatus.OFFLINE);
+        Main.getDragonBot().getShardManager().shutdown();
 
-        logger.info("Offline.");
+        logger.info("Bot Offline.");
     }
 }

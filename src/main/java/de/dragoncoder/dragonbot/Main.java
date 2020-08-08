@@ -38,10 +38,13 @@ public class Main {
 
 
     public static void main(String[] args) {
+        //Get connection-data like passwords and connection-links
         securedData = importSecuredData();
 
+        //Start Hibernate + Create Missing Tables
         HibernateUtils.getBotSessionFactory();
 
+        //Start the bot
         dragonBot = new Bot();
     }
 

@@ -1,5 +1,6 @@
 package de.dragoncoder.dragonbot;
 
+import de.dragoncoder.dragonbot.listeners.GuildListener;
 import de.dragoncoder.dragonbot.listeners.TextListener;
 import de.dragoncoder.dragonbot.managers.CommandManager;
 import de.dragoncoder.dragonbot.managers.GuildManager;
@@ -25,7 +26,7 @@ public class Bot {
     private final Logger logger;
 
     @Getter
-    private final ShardManager shardMan;
+    private final ShardManager shardManager;
     @Getter
     private final GuildManager guildManager;
     @Getter
@@ -42,11 +43,12 @@ public class Bot {
         botValues = new BotValues();
         botUtils = new BotUtils(botValues);
 
-        shardMan = createShardManager();
+        shardManager= createShardManager();
         guildManager = new GuildManager();
         commandManager = new CommandManager();
 
         awaitJdaReady();
+        loadGuildDataFromDatabase();
 
         logger.info("Bot online");
 
@@ -70,6 +72,7 @@ public class Bot {
 
             //EventListeners
             builder.addEventListeners(new TextListener());
+            builder.addEventListeners(new GuildListener());
 
             shardMan = builder.build();
         }
@@ -79,8 +82,10 @@ public class Bot {
         }
         return shardMan;
     }
+
+    //OneTimeTasks (Creates threads)
     private void awaitJdaReady() {
-        shardMan.getShards().forEach(jda -> {
+        shardManager.getShards().forEach(jda -> {
             try {
                 jda.awaitReady();
             } catch (InterruptedException e) {
@@ -88,7 +93,26 @@ public class Bot {
             }
         });
     }
+    private void loadGuildDataFromDatabase() {
+        Thread guildLoaderTask = new Thread(() -> {
+            while (Main.getDragonBot() == null) {
+                try {
+                    //noinspection BusyWait
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    logger.error("Error whilst waiting for the Bot to get ready: ", e);
+                }
+            }
+            shardManager.getGuilds().forEach(guild ->
+                    guildManager.getGuild(guild.getIdLong()));
 
+        });
+
+        guildLoaderTask.setName("LoadGuildDataFromDatabase-Thread");
+        guildLoaderTask.start();
+    }
+
+    //Looping thread
     private void runConsoleListener() {
         Thread consoleListener = new Thread(() -> {
 
@@ -99,7 +123,7 @@ public class Bot {
                 while((line = reader.readLine()) != null) {
 
                     botUtils.callAction(line);
-                    if (botValues.isTotalShutdown()) {
+                    if (botValues.isShutdown()) {
                         reader.close();
                     }
                 }
